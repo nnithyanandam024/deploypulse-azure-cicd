@@ -1,0 +1,79 @@
+name: DeployPulse CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Prevent concurrent deployments to Azure host
+concurrency:
+  group: deploypulse-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build, Test, Deploy & Verify
+    runs-on: self-hosted
+
+    steps:
+      # Stage 1: Checkout Repository
+      - name: 1. Checkout Source Code
+        uses: actions/checkout@v4
+
+      # Stage 2: Node.js Runtime Setup
+      - name: 2. Setup Node.js 22 Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Stage 3: Automated Testing (Quality Gate)
+      # CRITICAL: If tests fail, the workflow terminates immediately.
+      # Build and deployment steps are strictly blocked.
+      - name: 3. Run Automated Quality Gate Tests
+        run: |
+          echo "Executing automated test suite..."
+          npm test
+
+      # Stage 4: Docker Compose Configuration Validation
+      - name: 4. Validate Docker Compose Configuration
+        run: |
+          echo "Validating docker-compose.yml syntax..."
+          docker compose config --quiet
+
+      # Stage 5: Docker Image Build
+      - name: 5. Build Docker Image
+        run: |
+          echo "Building application image with latest base..."
+          docker compose build --pull
+
+      # Stage 6: Application Deployment
+      - name: 6. Deploy Container Services
+        env:
+          APP_VERSION: ${{ github.sha }}
+        run: |
+          echo "Deploying release commit: $APP_VERSION"
+          APP_VERSION=${{ github.sha }} docker compose up -d --force-recreate --remove-orphans
+
+      # Stage 7: Post-Deployment Smoke Testing
+      - name: 7. Run Post-Deployment Smoke Tests
+        run: |
+          echo "Verifying application endpoints on localhost..."
+          curl --fail --silent --show-error \
+            --retry 10 --retry-delay 2 --retry-connrefused \
+            http://127.0.0.1/health
+          echo ""
+          curl --fail --silent --show-error \
+            http://127.0.0.1/api/info
+          echo ""
+          echo "Smoke tests passed successfully."
+
+      # Stage 8: Diagnostic Logs & Evidence (runs even on failure)
+      - name: 8. Capture Deployment Diagnostics & Evidence
+        if: always()
+        run: |
+          echo "=== Container Status ==="
+          docker compose ps
+          echo ""
+          echo "=== Recent Container Logs ==="
+          docker compose logs --no-color --tail=40 app nginx

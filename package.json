@@ -1,0 +1,25 @@
+{
+  "name": "deploypulse",
+  "version": "1.0.0",
+  "description": "DeployPulse - Automated CI/CD Pipeline for Web Applications",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/server.test.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "github-actions",
+    "docker",
+    "nginx",
+    "azure",
+    "automated-testing"
+  ],
+  "author": "DEVNEST",
+  "license": "MIT"
+}
