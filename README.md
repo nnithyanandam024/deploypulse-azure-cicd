@@ -95,7 +95,7 @@ To preserve your $100 Azure student credits throughout the hackathon and evaluat
 | Method | Path | Content-Type | Description |
 |:---:|:---|:---:|:---|
 | `GET` | `/` | `text/html` | Minimalist DevOps status dashboard with live uptime and release badge |
-| `GET` | `/changes` | `text/html` | Visual changelog & Quality Gate deployment trace |
+| `GET` | `/demo` | `text/html` | Interactive Visual A/B Comparison &amp; Deployment Delta |
 | `GET` | `/health` | `application/json` | Health probe returning `{"status":"ok","app":"DeployPulse","uptime":...}` |
 | `GET` | `/api/info` | `application/json` | Release information returning Git commit SHA and runtime metadata |
 | `*` | Any unknown | `application/json` | HTTP 404 response with `{"error":"Not Found","path":"..."}` |
@@ -110,13 +110,14 @@ DeployPulse/
 │   └── workflows/
 │       └── ci-cd.yml             # GitHub Actions Quality Gate CI/CD workflow
 ├── src/
-│   ├── server.js                 # Node.js 22 server (Dashboard, /changes, /health, /api/info)
+│   ├── server.js                 # Node.js 22 server (Dashboard, /demo, /health, /api/info)
 │   └── views/
 │       ├── index.html            # Main dashboard HTML template (customizable banner)
-│       └── changes.html          # Visual changelog and deployment history
+│       └── demo.html             # Interactive Visual A/B Comparison & Diff page
 ├── test/
 │   └── server.test.js            # Automated test suite (TC-01 through TC-05)
 ├── nginx/
+
 
 │   └── default.conf              # Nginx reverse proxy configuration & security headers
 ├── .dockerignore                 # Excludes test, git, and local scratch files
