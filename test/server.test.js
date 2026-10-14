@@ -1,4 +1,4 @@
-﻿const { describe, it, before, after } = require('node:test');
+const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { createServer } = require('../src/server.js');
 
@@ -75,5 +75,17 @@ describe('DeployPulse Automated Test Suite', () => {
     const data = await res.json();
     assert.equal(data.error, 'Not Found', 'Expected error to be "Not Found"');
     assert.equal(data.path, '/invalid-route-xyz', 'Expected path to match requested route');
+  });
+
+  // TC-05: Visual Changelog Endpoint Verification
+  it('TC-05: GET /changes should return HTTP 200 with changelog HTML', async () => {
+    const res = await fetch(`${baseUrl}/changes`);
+    assert.equal(res.status, 200, 'Expected HTTP 200 status code');
+    const contentType = res.headers.get('content-type');
+    assert.match(contentType, /text\/html/, 'Expected Content-Type to be text/html');
+
+    const body = await res.text();
+    assert.ok(body.includes('Visual Release Changelog'), 'Body should include "Visual Release Changelog"');
+    assert.ok(body.includes('Quality Gate'), 'Body should include "Quality Gate"');
   });
 });

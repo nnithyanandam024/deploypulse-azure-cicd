@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeployPulse | System Dashboard</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.12);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 2.5rem 1.25rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 880px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 1.5rem;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 0 3px var(--success-soft);
+      display: inline-block;
+    }
+
+    .brand-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      background-color: var(--success-soft);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      background-color: var(--accent-soft);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: rgba(37, 99, 235, 0.25);
+      color: #ffffff;
+    }
+
+    /* Visual Release Banner - Change this to show visual diffs to judges */
+    .release-banner {
+      background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .release-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .release-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #2563eb;
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+    }
+
+    .release-desc {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .release-link {
+      font-size: 0.8rem;
+      color: #93c5fd;
+      text-decoration: none;
+      font-family: var(--font-mono);
+    }
+
+    .release-link:hover {
+      text-decoration: underline;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: #ffffff;
+      word-break: break-all;
+    }
+
+    .section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.6);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .method {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.15);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    .endpoint-link {
+      font-family: var(--font-mono);
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .endpoint-link:hover {
+      text-decoration: underline;
+    }
+
+    .flow-diagram {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+    }
+
+    .flow-step {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: #e2e8f0;
+    }
+
+    .flow-arrow {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    footer {
+      margin-top: auto;
+      padding-top: 2rem;
+      width: 100%;
+      max-width: 880px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .release-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      footer {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-title">
+          <span class="status-dot"></span>
+          DeployPulse
+        </div>
+        <div class="brand-subtitle">Automated CI/CD Pipeline for Web Applications</div>
+      </div>
+      <div class="header-actions">
+        <a class="nav-btn" href="/changes">Changelog &rarr;</a>
+        <span class="badge">System Operational</span>
+      </div>
+    </header>
+
+    <!-- Visual Banner: Edit this during demos to show real-time UI changes -->
+    <div class="release-banner">
+      <div class="release-info">
+        <span class="release-tag">v1.0.0</span>
+        <span class="release-desc">Production Baseline — Continuous Integration & Quality Gate Active</span>
+      </div>
+      <a class="release-link" href="/changes">View Release Diff &rarr;</a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-label">Application Status</div>
+        <div class="card-value" style="color: var(--success);">HEALTHY</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Active Git Commit</div>
+        <div class="card-value" title="{{APP_VERSION}}">{{SHORT_VERSION}}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Service Uptime</div>
+        <div class="card-value" id="uptime-display">{{UPTIME_FORMATTED}}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Runtime Environment</div>
+        <div class="card-value">Node.js {{NODE_VERSION}}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span>Application Endpoints</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">HTTP Verification Interface</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Description</th>
+            <th>Response Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="method">GET</span></td>
+            <td><a class="endpoint-link" href="/">/</a></td>
+            <td>Web Status Dashboard</td>
+            <td><code>text/html</code></td>
+          </tr>
+          <tr>
+            <td><span class="method">GET</span></td>
+            <td><a class="endpoint-link" href="/changes">/changes</a></td>
+            <td>Visual Changelog & Pipeline Trace</td>
+            <td><code>text/html</code></td>
+          </tr>
+          <tr>
+            <td><span class="method">GET</span></td>
+            <td><a class="endpoint-link" href="/health">/health</a></td>
+            <td>Health Check Probe (Docker / Smoke Test)</td>
+            <td><code>application/json</code></td>
+          </tr>
+          <tr>
+            <td><span class="method">GET</span></td>
+            <td><a class="endpoint-link" href="/api/info">/api/info</a></td>
+            <td>Release & Pipeline Version Metadata</td>
+            <td><code>application/json</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">CI/CD Pipeline Architecture</div>
+      <div class="flow-diagram">
+        <div class="flow-step">Git Push (main)</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">GitHub Actions</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step" style="border-color: #059669; color: #34d399;">Quality Gate (npm test)</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">Docker Compose Build</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">Azure VM Deploy</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">Nginx (:80)</div>
+      </div>
+    </div>
+
+    <footer>
+      <div>Team DEVNEST &bull; Bannari Amman Institute of Technology</div>
+      <div>DevOps Community Hackathon 2026</div>
+    </footer>
+  </div>
+
+  <script>
+    let uptimeSec = {{UPTIME_SECONDS}};
+    setInterval(() => {
+      uptimeSec++;
+      const d = Math.floor(uptimeSec / 86400);
+      const h = Math.floor((uptimeSec % 86400) / 3600);
+      const m = Math.floor((uptimeSec % 3600) / 60);
+      const s = Math.floor(uptimeSec % 60);
+      const parts = [];
+      if (d > 0) parts.push(d + 'd');
+      if (h > 0) parts.push(h + 'h');
+      if (m > 0) parts.push(m + 'm');
+      parts.push(s + 's');
+      const el = document.getElementById('uptime-display');
+      if (el) el.textContent = parts.join(' ');
+    }, 1000);
+  </script>
+</body>
+</html>
