@@ -1,4 +1,4 @@
-const { describe, it, before, after } = require('node:test');
+﻿const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { createServer } = require('../src/server.js');
 
@@ -45,7 +45,7 @@ describe('DeployPulse Automated Test Suite', () => {
     assert.match(contentType, /application\/json/, 'Expected Content-Type to be application/json');
 
     const data = await res.json();
-    assert.equal(data.status, 'failed_simulation', 'Expected status to be "ok"');
+    assert.equal(data.status, 'ok', 'Expected status to be "ok"');
     assert.equal(data.app, 'DeployPulse', 'Expected app to be "DeployPulse"');
     assert.equal(typeof data.uptime, 'number', 'Expected uptime to be a number');
     assert.ok(data.uptime >= 0, 'Uptime must be non-negative');
