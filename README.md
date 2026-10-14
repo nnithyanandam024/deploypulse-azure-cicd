@@ -95,7 +95,6 @@ To preserve your $100 Azure student credits throughout the hackathon and evaluat
 | Method | Path | Content-Type | Description |
 |:---:|:---|:---:|:---|
 | `GET` | `/` | `text/html` | Minimalist DevOps status dashboard with live uptime and release badge |
-| `GET` | `/demo` | `text/html` | Interactive Visual A/B Comparison &amp; Deployment Delta |
 | `GET` | `/health` | `application/json` | Health probe returning `{"status":"ok","app":"DeployPulse","uptime":...}` |
 | `GET` | `/api/info` | `application/json` | Release information returning Git commit SHA and runtime metadata |
 | `*` | Any unknown | `application/json` | HTTP 404 response with `{"error":"Not Found","path":"..."}` |
@@ -110,12 +109,11 @@ DeployPulse/
 │   └── workflows/
 │       └── ci-cd.yml             # GitHub Actions Quality Gate CI/CD workflow
 ├── src/
-│   ├── server.js                 # Node.js 22 server (Dashboard, /demo, /health, /api/info)
+│   ├── server.js                 # Node.js 22 server (Dashboard, /health, /api/info)
 │   └── views/
-│       ├── index.html            # Main dashboard HTML template (customizable banner)
-│       └── demo.html             # Interactive Visual A/B Comparison & Diff page
+│       └── index.html            # Main dashboard HTML template
 ├── test/
-│   └── server.test.js            # Automated test suite (TC-01 through TC-05)
+│   └── server.test.js            # Automated test suite (TC-01 through TC-04)
 ├── nginx/
 
 

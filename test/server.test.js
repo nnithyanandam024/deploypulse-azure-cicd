@@ -76,18 +76,6 @@ describe('DeployPulse Automated Test Suite', () => {
     assert.equal(data.error, 'Not Found', 'Expected error to be "Not Found"');
     assert.equal(data.path, '/invalid-route-xyz', 'Expected path to match requested route');
   });
-
-  // TC-05: Visual A/B Demo Endpoint Verification
-  it('TC-05: GET /demo should return HTTP 200 with visual A/B comparison HTML', async () => {
-    const res = await fetch(`${baseUrl}/demo`);
-    assert.equal(res.status, 200, 'Expected HTTP 200 status code');
-    const contentType = res.headers.get('content-type');
-    assert.match(contentType, /text\/html/, 'Expected Content-Type to be text/html');
-
-    const body = await res.text();
-    assert.ok(body.includes('Visual A/B Release Comparison'), 'Body should include "Visual A/B Release Comparison"');
-    assert.ok(body.includes('VERSION A (BASELINE)'), 'Body should include "VERSION A (BASELINE)"');
-    assert.ok(body.includes('VERSION B (LIVE UPDATED)'), 'Body should include "VERSION B (LIVE UPDATED)"');
-  });
 });
+
 

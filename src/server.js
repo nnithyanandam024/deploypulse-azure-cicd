@@ -62,18 +62,6 @@ function createServer() {
       return;
     }
 
-    // Visual A/B Release Comparison & Diff
-    if (req.method === 'GET' && pathname === '/demo') {
-      const uptimeSeconds = Math.floor((Date.now() - START_TIME) / 1000);
-      const html = renderTemplate('demo', uptimeSeconds);
-      res.writeHead(200, {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'X-Content-Type-Options': 'nosniff'
-      });
-      res.end(html);
-      return;
-    }
 
 
     // Health Endpoint (Docker probe & smoke tests)
