@@ -156,12 +156,13 @@ DeployPulse/
 1. Log in to the [Azure Portal](https://portal.azure.com/).
 2. Click **Create a resource** > **Virtual machine**.
 3. Fill in the parameters:
-   - **Resource group**: `rg-deploypulse` (create new).
+   - **Resource group**: `rg-deploypulse` (create a new one in the same region as the VM).
    - **VM name**: `vm-deploypulse`.
-   - **Region**: Select a low-cost region (e.g., *East US*, *Central India*, or *Southeast Asia*).
+   - **Region**: **`Central India`** (or **`South India`** / **`West India`**).
+     > **Important for Azure Student Accounts**: Azure for Students restricts resource deployment to designated regional data centers (typically `Central India` for Indian student subscriptions). Selecting restricted regions like `East US` triggers a `RequestDisallowedByAzure` policy error.
    - **Image**: `Ubuntu Server 24.04 LTS - x64` (or `22.04 LTS`).
    - **Size**: `Standard_B1s` (1 vCPU, 1 GiB RAM) or `Standard_B2s`.
-   - **Authentication**: SSH Public Key.
+   - **Authentication**: SSH Public Key (or Password for simplicity).
 4. **Networking**:
    - Allow ports `22` (SSH) and `80` (HTTP).
    - Ensure a Public IP address is created.
@@ -169,6 +170,7 @@ DeployPulse/
    ```bash
    ssh -i <your-key.pem> azureuser@<YOUR_AZURE_VM_PUBLIC_IP>
    ```
+
 
 ---
 
