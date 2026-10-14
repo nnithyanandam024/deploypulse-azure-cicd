@@ -11,6 +11,12 @@
 
 **DeployPulse** is a lightweight, production-grade automated CI/CD pipeline and web status service built with **Node.js 22**, **Docker**, **Nginx**, and **GitHub Actions**, deployed to an **Ubuntu Linux VM on Microsoft Azure**.
 
+### 🌐 Live Production Deployment
+- **Dashboard URL**: [http://20.196.98.125/](http://20.196.98.125/)
+- **Health Probe**: [http://20.196.98.125/health](http://20.196.98.125/health)
+- **Release Metadata**: [http://20.196.98.125/api/info](http://20.196.98.125/api/info)
+- **Azure Host**: `vm-deploypulse` (`koreacentral`, `Standard_B2als_v2`)
+
 Whenever a developer pushes code to the `main` branch, GitHub Actions automatically executes the pipeline:
 1. Runs automated unit and HTTP route tests (**Quality Gate**).
 2. Validates Docker Compose configuration.
@@ -21,6 +27,7 @@ Whenever a developer pushes code to the `main` branch, GitHub Actions automatica
 7. Captures container status and diagnostic logs.
 
 If any test fails at Stage 3, the pipeline **immediately halts**, strictly blocking the build and deployment stages.
+
 
 ---
 
